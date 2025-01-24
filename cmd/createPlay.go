@@ -9,6 +9,7 @@ import (
 	"github.com/wainersm/coco-play/pkg/cluster"
 	"github.com/wainersm/coco-play/pkg/coco"
 	"github.com/wainersm/coco-play/pkg/kbs"
+	"github.com/wainersm/coco-play/pkg/tekton"
 	"github.com/wainersm/coco-play/pkg/versions"
 )
 
@@ -21,7 +22,8 @@ var createPlayCmd = &cobra.Command{
 
 - Create a new Kind (https://kind.sigs.k8s.io) cluster
 - Install the CoCo operator
-- Install the KBS`,
+- Install the KBS
+- Install the Tekton pipeline`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var err error
 		if err = cluster.CreateCluster(); err != nil {
@@ -33,6 +35,10 @@ var createPlayCmd = &cobra.Command{
 		}
 
 		if err = kbs.InstallKbs(versions.KbsVersion); err != nil {
+			return err
+		}
+
+		if err = tekton.Install(versions.TektonVersion); err != nil {
 			return err
 		}
 
